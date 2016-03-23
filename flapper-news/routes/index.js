@@ -55,4 +55,17 @@ router.put('/posts/:post/upvote', function(req, res, next){
   });
 });
 
+router.post('/post/:post/comments', function(req, res, next){
+  var comment = new Comment(req.body);
+  comment.post = req.post;
+  comment.save(function(err, comment){
+    if (err) throw err;
+    req.post.comments.push(comment);
+    req.post.save(function(err, post){
+      if (err) throw err;
+      res.json(comment);
+    });
+  });
+});
+
 module.exports = router;
